@@ -22,6 +22,17 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $this->command->info('✅ Admin user created: wlsfernandes@gmail.com / administrator');
+        User::updateOrCreate(
+            ['email' => 'drlizrios@gmail.com'],
+            [
+                'name' => 'Administrator',
+                'email_verified_at' => now(),
+                'password' => Hash::make('administrator'), // same password as requested
+            ]
+        );
+
+        $this->command->info('✅ Admin users created:');
+        $this->command->info(' - wlsfernandes@gmail.com / administrator');
+        $this->command->info(' - drlizrios@gmail.com / administrator');
     }
 }
