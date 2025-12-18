@@ -16,6 +16,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Locale Language 
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'es'])) {
+        Session::put('locale', $locale);
+        App::setLocale($locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 
 // 🧱 ADMIN SECTION
 
