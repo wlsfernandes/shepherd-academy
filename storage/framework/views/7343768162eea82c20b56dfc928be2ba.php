@@ -1,5 +1,5 @@
 <?php $__env->startSection('title'); ?>
-    <?php echo app('translator')->get('translation.Login'); ?>
+    Login
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -56,7 +56,7 @@ unset($__errorArgs, $__bag); ?>
                                 <div class="mb-3">
                                     <div class="float-end">
                                         <?php if(Route::has('password.request')): ?>
-                                            <a href="<?php echo e(secure_url(route('password.request'))); ?>" class="text-muted">Forgot
+                                            <a href="<?php echo e(route('password.request')); ?>" class="text-muted">Forgot
                                                 password?</a>
                                         <?php endif; ?>
                                     </div>

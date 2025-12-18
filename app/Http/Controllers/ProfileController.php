@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\SystemLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Throwable;
 
 class ProfileController extends Controller
 {
@@ -26,15 +29,47 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        try {
+            DB::transaction(function () use ($request) {
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+                $user = $request->user();
+
+                $user->fill($request->validated());
+
+                // If email changed, require re-verification
+                if ($user->isDirty('email')) {
+                    $user->email_verified_at = null;
+                }
+
+                $user->save();
+            });
+
+            SystemLogger::log(
+                'Profile updated',
+                'info',
+                'profile.update',
+                ['user_id' => $request->user()->id]
+            );
+
+            return Redirect::route('profile.edit')
+                ->with('success', 'Your profile has been updated successfully.');
+
+        } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Profile update failed',
+                'error',
+                'profile.update',
+                [
+                    'user_id' => $request->user()->id,
+                    'exception' => $e->getMessage(),
+                ]
+            );
+
+            return Redirect::back()
+                ->withInput()
+                ->with('error', 'An error occurred while updating your profile.');
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
@@ -46,15 +81,43 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        try {
+            DB::transaction(function () use ($request) {
 
-        Auth::logout();
+                $user = $request->user();
 
-        $user->delete();
+                SystemLogger::log(
+                    'User deleted own account',
+                    'warning',
+                    'profile.destroy',
+                    ['user_id' => $user->id]
+                );
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+                Auth::logout();
 
-        return Redirect::to('/');
+                $user->delete();
+            });
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return Redirect::to('/')
+                ->with('success', 'Your account has been deleted.');
+
+        } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Profile deletion failed',
+                'critical',
+                'profile.destroy',
+                [
+                    'user_id' => $request->user()->id,
+                    'exception' => $e->getMessage(),
+                ]
+            );
+
+            return Redirect::route('profile.edit')
+                ->with('error', 'Unable to delete your account. Please contact support.');
+        }
     }
 }

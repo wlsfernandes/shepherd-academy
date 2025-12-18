@@ -1,7 +1,7 @@
 @extends('admin.layouts.master-without-nav')
 
 @section('title')
-    @lang('translation.Login')
+    Login
 @endsection
 
 @section('content')
@@ -44,7 +44,7 @@
                                 <div class="mb-3">
                                     <div class="float-end">
                                         @if (Route::has('password.request'))
-                                            <a href="{{ secure_url(route('password.request')) }}" class="text-muted">Forgot
+                                            <a href="{{ route('password.request') }}" class="text-muted">Forgot
                                                 password?</a>
                                         @endif
                                     </div>
