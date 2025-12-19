@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class RoleController extends Controller
+class RoleController extends BaseController
 {
     public function index()
     {
@@ -44,10 +44,14 @@ class RoleController extends Controller
         }
     }
 
+<<<<<<< HEAD
     public function edit(Role $role)
     {
         return view('admin.roles.form', compact('role'));
     }
+=======
+
+>>>>>>> fbecd8d (add file mangement s3)
 
     public function update(Request $request, Role $role)
     {

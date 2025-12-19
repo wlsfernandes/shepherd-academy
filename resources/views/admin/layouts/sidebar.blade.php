@@ -32,6 +32,44 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
+                <li>
+                    <a href="#" class="has-arrow waves-effect" onclick="return false;">
+                        <i class="dripicons-browser"></i>
+                        <span>Website</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="">
+                                <i class="fas fa-image"></i>Banners
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="">
+                                <i class="uil-blogger-alt"></i>Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('events.index') }}">
+                                <i class="uil uil-ticket"></i>Events
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <i class="uil uil-layer-group"></i> Our Partners
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""> <i class="uil uil-briefcase"></i> Open Positions
+                            </a>
+                        </li>
+                        <li>
+                            <a href=""><i class="uil-feedback"></i>Testimonial</a>
+                        </li>
+                    </ul>
+                </li>
+
+                </li>
                 @can('access-admin')
                     <li>
                         <a href="#" class="has-arrow waves-effect" onclick="return false;">
