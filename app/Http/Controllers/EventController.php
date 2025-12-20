@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\SystemLogger;
+use App\Helpers\S3;
 use Throwable;
 
 class EventController extends BaseController
@@ -66,12 +68,30 @@ class EventController extends BaseController
                     'external_link' => $request->external_link,
                 ]);
             });
-
+            SystemLogger::log(
+                'Event created',
+                'info',
+                'events.store',
+                [
+                    'email' => $request->email,
+                    'roles' => $request->roles ?? [],
+                ]
+            );
             return redirect()
                 ->route('events.index')
                 ->with('success', 'Event created successfully.');
 
         } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Event creation failed',
+                'error',
+                'events.store',
+                [
+                    'exception' => $e->getMessage(),
+                    'email' => $request->email,
+                ]
+            );
             return back()
                 ->withInput()
                 ->with('error', 'Failed to create event.');
@@ -123,12 +143,31 @@ class EventController extends BaseController
                     'external_link',
                 ]));
             });
-
+            SystemLogger::log(
+                'Event created',
+                'info',
+                'events.update',
+                [
+                    'email' => $request->email,
+                    'roles' => $request->roles ?? [],
+                ]
+            );
             return redirect()
                 ->route('events.index')
                 ->with('success', 'Event updated successfully.');
 
         } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Event creation failed',
+                'error',
+                'events.update',
+                [
+                    'exception' => $e->getMessage(),
+                    'email' => $request->email,
+                ]
+            );
+
             return back()
                 ->with('error', 'Failed to update event.');
         }
@@ -140,13 +179,43 @@ class EventController extends BaseController
     public function destroy(Event $event)
     {
         try {
+            if (!empty($event->image_url)) {
+                S3::delete($event->image_url);
+            }
+
+            // 🔥 Delete English file if exists
+            if (!empty($event->file_url_en)) {
+                S3::delete($event->file_url_en);
+            }
+
+            // 🔥 Delete Spanish file if exists
+            if (!empty($event->file_url_es)) {
+                S3::delete($event->file_url_es);
+            }
             $event->delete();
 
+            SystemLogger::log(
+                'Event deleted',
+                'info',
+                'events.delete',
+                [
+                    'roles' => $request->roles ?? [],
+                ]
+            );
             return redirect()
                 ->route('events.index')
                 ->with('success', 'Event deleted successfully.');
 
         } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Event deletion failed',
+                'error',
+                'events.delete',
+                [
+                    'exception' => $e->getMessage(),
+                ]
+            );
             return back()->with('error', 'Failed to delete event.');
         }
     }

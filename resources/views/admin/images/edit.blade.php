@@ -15,9 +15,29 @@
             <x-alert />
 
             <div class="bg-info bg-opacity-10 text-info small p-3 rounded mb-4">
-                Upload an image. It will be automatically converted to
-                <strong>WebP</strong> and optimized.
+                <strong>Image upload guidelines:</strong><br>
+                • The image will be automatically converted to <strong>WebP</strong> and optimized.<br>
+
+                @if($modelKey === 'banners')
+                    • Recommended dimensions for <strong>banners</strong>:
+                    <strong>1920 × 600 pixels</strong>.<br>
+                    • Use a wide image with important content centered.
+                @elseif($modelKey === 'blogs')
+                    • Recommended dimensions for <strong>blog images</strong>:
+                    <strong>1200 × 630 pixels</strong>.<br>
+                    • Ideal for blog pages and social sharing previews.
+                @elseif($modelKey === 'event')
+                    • Recommended dimensions for <strong>event images</strong>:
+                    <strong>1200 × 500 pixels</strong>.<br>
+                    • Use a horizontal image with good contrast.
+                @else
+                    • Use a high-quality horizontal image for best results.
+                @endif
+
+                <br>
+                • Images that do not match the recommended size may be cropped or resized.
             </div>
+
 
             @if($image)
                 <div class="mb-3">

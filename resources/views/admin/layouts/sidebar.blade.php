@@ -39,7 +39,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
-                            <a href="">
+                            <a href="{{ route('banners.index') }}">
                                 <i class="fas fa-image"></i>Banners
                             </a>
                         </li>

@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\SystemLogger;
 use Throwable;
+use App\Helpers\S3;
+
 
 class BlogController extends BaseController
 {
@@ -62,15 +65,35 @@ class BlogController extends BaseController
                     'external_link' => $request->external_link,
                 ]);
             });
-
+            SystemLogger::log(
+                'Blog created',
+                'info',
+                'blogs.store',
+                [
+                    'email' => $request->email,
+                    'roles' => $request->roles ?? [],
+                ]
+            );
             return redirect()
                 ->route('blogs.index')
                 ->with('success', 'Blog created successfully.');
 
         } catch (Throwable $e) {
+
+            SystemLogger::log(
+                'Blog creation failed',
+                'error',
+                'blogs.store',
+                [
+                    'exception' => $e->getMessage(),
+                    'email' => $request->email,
+                ]
+            );
+
             return back()
                 ->withInput()
                 ->with('error', 'Failed to create blog.');
+
         }
     }
 
@@ -117,12 +140,29 @@ class BlogController extends BaseController
                     'external_link',
                 ]));
             });
-
+            SystemLogger::log(
+                'Blog updated',
+                'info',
+                'blogs.update',
+                [
+                    'email' => $request->email,
+                    'roles' => $request->roles ?? [],
+                ]
+            );
             return redirect()
                 ->route('blogs.index')
                 ->with('success', 'Blog updated successfully.');
 
         } catch (Throwable $e) {
+            SystemLogger::log(
+                'Blog update failed',
+                'error',
+                'blogs.update',
+                [
+                    'exception' => $e->getMessage(),
+                    'email' => $request->email,
+                ]
+            );
             return back()
                 ->with('error', 'Failed to update blog.');
         }
@@ -131,17 +171,54 @@ class BlogController extends BaseController
     /**
      * Delete blog.
      */
+
     public function destroy(Blog $blog)
     {
         try {
+            // 🔥 Delete image if exists
+            if (!empty($blog->image_url)) {
+                S3::delete($blog->image_url);
+            }
+
+            // 🔥 Delete English file if exists
+            if (!empty($blog->file_url_en)) {
+                S3::delete($blog->file_url_en);
+            }
+
+            // 🔥 Delete Spanish file if exists
+            if (!empty($blog->file_url_es)) {
+                S3::delete($blog->file_url_es);
+            }
+
             $blog->delete();
+
+            SystemLogger::log(
+                'Blog deleted',
+                'info',
+                'blogs.delete',
+                [
+                    'blog_id' => $blog->id,
+                    'title' => $blog->title_en,
+                ]
+            );
 
             return redirect()
                 ->route('blogs.index')
                 ->with('success', 'Blog deleted successfully.');
 
         } catch (Throwable $e) {
+            SystemLogger::log(
+                'Blog deletion failed',
+                'error',
+                'blogs.delete',
+                [
+                    'blog_id' => $blog->id ?? null,
+                    'exception' => $e->getMessage(),
+                ]
+            );
+
             return back()->with('error', 'Failed to delete blog.');
         }
     }
+
 }

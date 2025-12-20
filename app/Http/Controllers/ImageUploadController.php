@@ -13,6 +13,7 @@ class ImageUploadController extends BaseController
     protected array $models = [
         'events' => \App\Models\Event::class,
         'blogs' => \App\Models\Blog::class,
+        'banners' => \App\Models\Banner::class,
         // add more models here
     ];
 

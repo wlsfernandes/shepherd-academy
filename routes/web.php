@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AuditController;
@@ -79,6 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('system-logs', [SystemLogController::class, 'index'])->name('system-logs.index');
     Route::get('audits', [AuditController::class, 'index'])->name('audits.index');
     Route::resource('roles', RoleController::class)->except(['show']);
+    Route::resource('banners', BannerController::class);
     Route::resource('events', EventController::class);
     Route::resource('blogs', BlogController::class);
 });
