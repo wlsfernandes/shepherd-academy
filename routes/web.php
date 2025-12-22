@@ -14,6 +14,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublishController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FileUploadController;
@@ -88,7 +91,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('blogs', BlogController::class);
     Route::resource('about', AboutController::class);
     Route::resource('partners', PartnerController::class);
-
+    Route::resource('positions', PositionController::class);
+    Route::resource('testimonials', TestimonialController::class);
+    Route::resource('teams', TeamController::class);
 
 });
 

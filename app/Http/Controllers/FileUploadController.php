@@ -18,6 +18,7 @@ class FileUploadController extends BaseController
     protected array $models = [
         'events' => \App\Models\Event::class,
         'blogs' => \App\Models\Blog::class,
+        'positions' => \App\Models\Position::class,
     ];
 
 

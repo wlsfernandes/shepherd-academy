@@ -65,11 +65,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href=""> <i class="uil uil-briefcase"></i> Open Positions
+                            <a href="{{ route('positions.index') }}"> <i class="uil uil-briefcase"></i> Open Positions
                             </a>
                         </li>
                         <li>
-                            <a href=""><i class="uil-feedback"></i>Testimonial</a>
+                            <a href="{{ route('teams.index') }}"> <i class="fas fa-users"></i> Team
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('testimonials.index') }}"><i class="uil-feedback"></i>Testimonial</a>
                         </li>
                     </ul>
                 </li>
