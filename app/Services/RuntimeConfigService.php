@@ -38,19 +38,23 @@ class RuntimeConfigService
     public static function applyStripeConfig(): void
     {
         try {
-            if (!Schema::hasTable('developer_settings'))
+            if (!Schema::hasTable('developer_settings')) {
                 return;
+            }
 
             $s = DeveloperSetting::current();
 
-            if (!$s->stripe_enabled)
+            // ✅ Enable Stripe if secret exists
+            if (empty($s->stripe_secret)) {
                 return;
+            }
 
             Config::set('services.stripe.key', $s->stripe_key);
             Config::set('services.stripe.secret', $s->stripe_secret);
-            Config::set('services.stripe.currency', $s->stripe_currency);
+            Config::set('services.stripe.currency', $s->stripe_currency ?? 'usd');
 
         } catch (\Throwable $e) {
+            // never crash boot
         }
     }
 

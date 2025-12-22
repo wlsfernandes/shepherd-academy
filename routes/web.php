@@ -146,14 +146,10 @@ Route::middleware(['auth', 'verified', 'can:access-website-admin'])->group(funct
 
 Route::middleware(['auth', 'verified', 'can:access-developer'])->group(function () {
 
-    Route::get('/developer-settings', [DeveloperSettingController::class, 'index'])
-        ->name('developer-settings.index');
-
-    Route::get('/developer-settings/edit', [DeveloperSettingController::class, 'edit'])
-        ->name('developer-settings.edit');
-
-    Route::put('/developer-settings', [DeveloperSettingController::class, 'update'])
-        ->name('developer-settings.update');
+    Route::get('/developer-settings', [DeveloperSettingController::class, 'index'])->name('developer-settings.index');
+    Route::get('/developer-settings/edit', [DeveloperSettingController::class, 'edit'])->name('developer-settings.edit');
+    Route::put('/developer-settings', [DeveloperSettingController::class, 'update'])->name('developer-settings.update');
+    Route::post('/developer-settings/test-stripe', [DeveloperSettingController::class, 'testStripe'])->name('developer-settings.test-stripe');
 
 });
 

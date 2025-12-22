@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DeveloperSetting;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
+use Stripe\StripeClient;
+use Illuminate\Http\JsonResponse;
 use Exception;
 
 class DeveloperSettingController extends BaseController
@@ -139,5 +141,39 @@ class DeveloperSettingController extends BaseController
         }
 
         return $data;
+    }
+
+    public function testStripe(): JsonResponse
+    {
+        try {
+            $secret = config('services.stripe.secret');
+
+            if (empty($secret)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stripe secret key is not configured.',
+                ], 400);
+            }
+
+            $stripe = new StripeClient($secret);
+
+            // ✅ CORRECT Stripe SDK call
+            $account = $stripe->accounts->retrieve();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stripe connection successful.',
+                'account_id' => $account->id,
+                'country' => $account->country,
+                'email' => $account->email ?? null,
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stripe connection failed.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
     }
 }

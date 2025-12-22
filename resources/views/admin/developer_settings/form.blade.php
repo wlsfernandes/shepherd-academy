@@ -74,6 +74,13 @@
                            placeholder="usd"
                            value="{{ old('stripe_currency', $setting->stripe_currency) }}">
                 </div>
+<div class="mt-2">
+    <button type="button"
+            class="btn btn-outline-danger btn-sm"
+            onclick="testStripeConnection()">
+        <i class="fab fa-stripe"></i> Test Stripe Connection
+    </button>
+</div>
 
                 <hr>
 
@@ -228,4 +235,32 @@
             </form>
         </div>
     </div>
+@endsection
+@section('script')
+<script>
+function testStripeConnection() {
+    fetch("{{ route('developer-settings.test-stripe') }}", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "Accept": "application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert(
+                "✅ " + data.message +
+                "\nAccount ID: " + data.account_id +
+                "\nCountry: " + data.country
+            );
+        } else {
+            alert("❌ " + data.message + "\n" + (data.error ?? ""));
+        }
+    })
+    .catch(() => {
+        alert("❌ Unable to reach Stripe.");
+    });
+}
+</script>
 @endsection
