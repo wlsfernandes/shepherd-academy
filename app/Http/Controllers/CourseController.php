@@ -27,13 +27,20 @@ class CourseController extends BaseController
             'description' => 'nullable|string',
             'image_url' => 'nullable|string|max:255',
             'price' => 'nullable|numeric|min:0',
-            'allow_installments' => 'boolean',
+            'allow_installments' => 'nullable|boolean',
+            'installment_count' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'required_if:allow_installments,1',
+            ],
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'is_published' => 'nullable|boolean',
             'publish_start_at' => 'nullable|date',
             'publish_end_at' => 'nullable|date|after_or_equal:publish_start_at',
         ]);
+
     }
 
     protected function validateUpdate(Request $request): array

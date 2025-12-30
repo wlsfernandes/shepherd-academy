@@ -19,6 +19,7 @@ return new class extends Migration {
             // 💰 Pricing (simple, per-course)
             $table->decimal('price', 8, 2)->nullable()->after('image_url');
             $table->boolean('allow_installments')->default(false)->after('price');
+            $table->integer('installment_count')->nullable()->after('allow_installments');
 
             // 🗓️ Course timeline
             $table->date('start_date')->nullable()->after('allow_installments');
@@ -26,8 +27,8 @@ return new class extends Migration {
 
             // 🌍 Public visibility
             $table->boolean('is_published')->default(false)->after('end_date');
-            $table->timestamp('publish_start_at')->nullable()->after('is_published');
-            $table->timestamp('publish_end_at')->nullable()->after('publish_start_at');
+            $table->date('publish_start_at')->nullable()->after('is_published');
+            $table->date('publish_end_at')->nullable()->after('publish_start_at');
         });
     }
 

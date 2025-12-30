@@ -23,6 +23,7 @@ class Course extends Model
         // Commerce
         'price',
         'allow_installments',
+        'installment_count',
 
         // Timeline
         'start_date',
@@ -39,8 +40,8 @@ class Course extends Model
         'is_published' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
-        'publish_start_at' => 'datetime',
-        'publish_end_at' => 'datetime',
+        'publish_start_at' => 'date',
+        'publish_end_at' => 'date',
         'price' => 'decimal:2',
     ];
 

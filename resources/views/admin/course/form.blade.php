@@ -22,12 +22,24 @@
 
                         {{-- START / END DATES --}}
                         <div class="row">
+
                             <div class="col-md-3 mb-3">
+
                                 <div class="form-check form-switch form-switch-lg">
                                     <input type="checkbox" name="is_published" value="1" class="form-check-input"
                                         id="is_published" {{ old('is_published', $course->is_published ?? false) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_published">
                                         Publish this course on the website
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check form-switch form-switch-lg">
+                                    <input type="checkbox" name="allow_installments" value="1" class="form-check-input"
+                                        id="allow_installments" {{ old('allow_installments', $course->allow_installments ?? false) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="allow_installments">
+                                        Allow Installments
                                     </label>
                                 </div>
                             </div>
@@ -37,17 +49,47 @@
                                     value="{{ old('price', $course->price ?? '') }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label class="form-label">Start Date</label>
-                                <input type="date" name="start_date" class="form-control"
-                                    value="{{ old('start_date', $course->start_date ?? '') }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">End Date</label>
-                                <input type="date" name="end_date" class="form-control"
-                                    value="{{ old('end_date', $course->end_date ?? '') }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                                <div class="form-check form-switch form-switch-lg">
+                                    <label class="form-label">Installment Count</label>
+                                    <input type="number" name="installment_count" class="form-control"
+                                        value="{{ old('installment_count', $course->installment_count ?? '') }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                                </div>
                             </div>
                         </div>
+                        <div class="row">
+
+                            {{-- Course Start --}}
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Course Start</label>
+                                <input type="date" name="start_date" class="form-control"
+                                    value="{{ old('start_date', optional($course->start_date)->format('Y-m-d')) }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                            </div>
+
+                            {{-- Course End --}}
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Course End</label>
+                                <input type="date" name="end_date" class="form-control"
+                                    value="{{ old('end_date', optional($course->end_date)->format('Y-m-d')) }}" {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                            </div>
+
+                            {{-- Publish Start --}}
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Publish Start</label>
+                                <input type="date" name="publish_start_at" class="form-control"
+                                    value="{{ old('publish_start_at', optional($course->publish_start_at)->format('Y-m-d')) }}"
+                                    {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                            </div>
+
+                            {{-- Publish End --}}
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Publish End</label>
+                                <input type="date" name="publish_end_at" class="form-control"
+                                    value="{{ old('publish_end_at', optional($course->publish_end_at)->format('Y-m-d')) }}"
+                                    {{ ($isViewing ?? false) ? 'disabled' : '' }}>
+                            </div>
+
+                        </div>
+
 
                         {{-- PUBLISH --}}
 
