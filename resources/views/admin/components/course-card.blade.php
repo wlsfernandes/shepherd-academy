@@ -18,6 +18,24 @@
 
                 <!-- Right: Action Buttons -->
                 <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div style="height: 22px; width: 1px; background: #e5e7eb;"></div>
+                    <div class="d-inline-flex align-items-center px-2 py-1 rounded border bg-light gap-2">
+                        <a href="{{ route('admin.images.edit', ['model' => 'course', 'id' => $course->id]) }}"
+                            title="Upload / Edit image">
+                            <i
+                                class="uil uil-image {{ $course->image_url ? 'text-primary' : 'text-muted' }} font-size-20"></i>
+                        </a>
+
+                        @if($course->image_url)
+                            <a href="{{ route('admin.images.preview', ['model' => 'course', 'id' => $course->id]) }}"
+                                target="_blank" title="View image">
+                                <i class="uil uil-download-alt text-primary"></i>
+                            </a>
+                        @else
+                            <i class="uil uil-download-alt text-muted"></i>
+                        @endif
+                    </div>
+                    <div style="height: 22px; width: 1px; background: #e5e7eb;"></div>
                     <a href="{{ url('/course/' . $course->id) }}" class="text-primary" title="View Course">
                         <i class="fas fa-eye"></i>
                     </a>
@@ -58,7 +76,7 @@
                         'openCourseId' => $openCourseId
                     ])
                 @endforeach
-                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
         @endif
     </div>
 </div>

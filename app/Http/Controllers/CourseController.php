@@ -1,28 +1,75 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use App\Services\SystemLogger;
 use Exception;
 
-class CourseController extends Controller
+class CourseController extends BaseController
 {
-    public function index(): View
+
+    /*
+     |--------------------------------------------------------------------------
+     | Validation (Separated on Purpose)
+     |--------------------------------------------------------------------------
+     */
+    protected function validateStore(Request $request): array
+    {
+        return $request->validate([
+            'title' => 'required|string|max:255',
+            'summary' => 'nullable|string|max:500',
+            'description' => 'nullable|string',
+            'image_url' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+            'allow_installments' => 'boolean',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'is_published' => 'nullable|boolean',
+            'publish_start_at' => 'nullable|date',
+            'publish_end_at' => 'nullable|date|after_or_equal:publish_start_at',
+        ]);
+    }
+
+    protected function validateUpdate(Request $request): array
+    {
+        // Same rules for now — separated for future divergence
+        return $this->validateStore($request);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Index
+    |--------------------------------------------------------------------------
+    */
+    public function index(): View|RedirectResponse
     {
         try {
             $courses = Course::with('modules.tasks.lessons', 'modules.tasks.files', 'modules.tasks.tests')->get();
             return view('admin.course.index', compact('courses'));
         } catch (Exception $e) {
-            Log::error('Error fetching courses: ' . $e->getMessage());
+            SystemLogger::log(
+                'Failed to fetch courses',
+                'error',
+                'course.index',
+                ['exception' => $e->getMessage()]
+            );
+
             session()->now('error', 'An error occurred while fetching courses.');
             return redirect()->back();
         }
     }
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Create / Edit / Show
+    |--------------------------------------------------------------------------
+    */
     public function create()
     {
         return view('admin.course.form', [
@@ -40,94 +87,161 @@ class CourseController extends Controller
             'course' => $course,
             'formAction' => route('course.update', $course->id),
             'formMethod' => 'PUT',
-            'isEditing' => true, // only this is required
+            'isEditing' => true,
         ]);
     }
 
-
-    public function show(string $id): View
+    public function show(string $id): View|RedirectResponse
     {
         try {
             $course = Course::findOrFail($id);
+
             return view('admin.course.form', [
                 'course' => $course,
-                'isViewing' => true, // only this is required
+                'isViewing' => true,
             ]);
+
         } catch (Exception $e) {
-            Log::error('Error fetching course details: ' . $e->getMessage());
+            SystemLogger::log(
+                'Failed to view course',
+                'error',
+                'course.show',
+                ['exception' => $e->getMessage()]
+            );
+
             session()->now('error', 'An error occurred while fetching course details.');
             return redirect()->back();
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Store
+    |--------------------------------------------------------------------------
+    */
+    public function store(Request $request)
+    {
+        $validated = $this->validateStore($request);
 
+        try {
+            DB::beginTransaction();
+
+            $course = new Course($validated);
+            $course->institution_id = auth_institution_id();
+            $course->slug = Course::generateUniqueSlug($course);
+            $course->save();
+
+            DB::commit();
+
+            SystemLogger::log(
+                'Course created',
+                'info',
+                'course.store',
+                [
+                    'course_id' => $course->id,
+                    'institution_id' => $course->institution_id,
+                ]
+            );
+
+            session()->flash('success', 'Course included successfully.');
+            return redirect()->route('course.index');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            SystemLogger::log(
+                'Failed to create course',
+                'error',
+                'course.store',
+                ['exception' => $e->getMessage()]
+            );
+
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to include course.']);
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update
+    |--------------------------------------------------------------------------
+    */
+    public function update(Request $request, $id)
+    {
+        $validated = $this->validateUpdate($request);
+
+        try {
+            DB::beginTransaction();
+
+            $course = Course::findOrFail($id);
+            $course->fill($validated);
+            $course->institution_id = auth_institution_id();
+            $course->slug = Course::generateUniqueSlug($course);
+            $course->save();
+
+            DB::commit();
+
+            SystemLogger::log(
+                'Course updated',
+                'info',
+                'course.update',
+                ['course_id' => $course->id]
+            );
+
+            session()->flash('success', 'Course updated successfully.');
+            return redirect()->route('course.index');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            SystemLogger::log(
+                'Failed to update course',
+                'error',
+                'course.update',
+                ['exception' => $e->getMessage()]
+            );
+
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to update course.']);
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Destroy
+    |--------------------------------------------------------------------------
+    */
     public function destroy(string $id)
     {
         try {
             DB::beginTransaction();
+
             $course = Course::findOrFail($id);
             $course->delete();
+
             DB::commit();
+
+            SystemLogger::log(
+                'Course deleted',
+                'info',
+                'course.destroy',
+                ['course_id' => $id]
+            );
+
             session()->flash('success', 'Course deleted successfully.');
-            Log::info('Course deleted successfully.');
             return redirect()->route('course.index');
+
         } catch (Exception $e) {
             DB::rollBack();
-            session()->now('error', 'deleting course: ' . $e->getMessage());
-            Log::error('Error deleting course: ' . $e->getMessage());
-            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to delete course: ']);
+
+            SystemLogger::log(
+                'Failed to delete course',
+                'error',
+                'course.destroy',
+                ['exception' => $e->getMessage()]
+            );
+
+            return redirect()->back()->withErrors(['error' => 'Failed to delete course.']);
         }
     }
-
-
-
-
-    public function store(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-            //    $request->merge(['amount' => $request->input('amount', 0.00)]);
-            $course = new Course($request->all());
-            $course->institution_id = auth_institution_id();
-            $course->save();
-            DB::commit();
-            session()->flash('success', 'Course included successfully.'); // Flashing success message
-            Log::info('Course included successfully.');
-            return redirect()->route('course.index');
-        } catch (Exception $e) {
-            DB::rollBack();
-            session()->now('error', 'Failed to include Course: ' . $e->getMessage());
-            Log::error('Error saving Course: ' . $e->getMessage());
-            // return redirect()->back()->withInput()->withErrors(['error' => 'Failed to include course: ']);
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
-        }
-    }
-
-
-
-    public function update(Request $request, $id)
-    {
-        try {
-            DB::beginTransaction();
-
-            $course = Course::findOrFail($id);
-            $course->update($request->all());
-            $course->institution_id = auth_institution_id();
-            $course->save();
-            DB::commit();
-            session()->flash('success', 'Course updated successfully.');
-            Log::info('Course updated successfully.');
-            return redirect()->route('course.index');
-        } catch (Exception $e) {
-            DB::rollBack();
-            session()->now('error', 'Failed to update Course: ' . $e->getMessage());
-            Log::error('Error saving course: ' . $e->getMessage());
-            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to update Course: ']);
-        }
-    }
-
-    /************************** View  */
-
 
 
 }

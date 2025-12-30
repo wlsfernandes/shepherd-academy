@@ -16,6 +16,7 @@ class ImageUploadController extends BaseController
         'events' => \App\Models\Event::class,
         'blogs' => \App\Models\Blog::class,
         'banners' => \App\Models\Banner::class,
+        'course' => \App\Models\Course::class,
         'partners' => \App\Models\Partner::class,
         'positions' => \App\Models\Position::class,
         'testimonials' => \App\Models\Testimonial::class,
