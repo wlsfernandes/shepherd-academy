@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Page;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class PageController extends BaseController
@@ -150,7 +150,7 @@ class PageController extends BaseController
         try {
             // Cleanup banner image if exists
             if (!empty($page->image_url)) {
-                S3::delete($page->image_url);
+                S3Uploader::deletePath($page->image_url);
             }
 
             $page->delete();

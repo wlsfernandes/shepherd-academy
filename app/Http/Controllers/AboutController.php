@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\About;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 
 
 
@@ -118,7 +118,7 @@ class AboutController extends BaseController
     {
 
         if (!empty($about->image_url)) {
-            S3::delete($about->image_url);
+            S3Uploader::deletePath($about->image_url);
         }
 
         $about->delete();

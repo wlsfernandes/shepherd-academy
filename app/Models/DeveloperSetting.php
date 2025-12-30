@@ -44,12 +44,6 @@ class DeveloperSetting extends Model
         'mail_from_address',
         'mail_from_name',
 
-        // AWS / S3
-        'aws_access_key_id',
-        'aws_secret_access_key',
-        'aws_default_region',
-        'aws_bucket',
-        'aws_debug',
     ];
 
     protected $casts = [

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
+use App\Helpers\S3FolderGenerator;
 use Aws\S3\S3Client;
 use Illuminate\Database\Eloquent\Model;
 
@@ -74,13 +75,15 @@ class ImageUploadController extends BaseController
 
         // Delete old image if exists
         if (!empty($instance->image_url)) {
-            S3::delete($instance->image_url);
+            S3Uploader::deletePath($instance->image_url);
         }
 
         // Upload new image (WebP)
-        $path = S3::uploadImageAsWebp(
+        $directory = S3FolderGenerator::createFolder("{$model}/images");
+
+        $path = S3Uploader::uploadImageAsWebp(
             $request->file('image'),
-            "{$model}/images"
+            $directory
         );
 
         $instance->update([

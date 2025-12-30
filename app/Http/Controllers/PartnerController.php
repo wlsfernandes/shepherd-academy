@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class PartnerController extends BaseController
@@ -137,7 +137,7 @@ class PartnerController extends BaseController
     {
         try {
             if (!empty($partner->image_url)) {
-                S3::delete($partner->image_url);
+                S3Uploader::deletePath($partner->image_url);
             }
 
             $partner->delete();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class PositionController extends BaseController
@@ -154,15 +154,15 @@ class PositionController extends BaseController
         try {
             // Cleanup associated S3 assets
             if (!empty($position->image_url)) {
-                S3::delete($position->image_url);
+                S3Uploader::deletePath($position->image_url);
             }
 
             if (!empty($position->file_url_en)) {
-                S3::delete($position->file_url_en);
+                S3Uploader::deletePath($position->file_url_en);
             }
 
             if (!empty($position->file_url_es)) {
-                S3::delete($position->file_url_es);
+                S3Uploader::deletePath($position->file_url_es);
             }
 
             $position->delete();

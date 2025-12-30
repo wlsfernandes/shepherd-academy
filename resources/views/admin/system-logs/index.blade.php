@@ -28,33 +28,44 @@
                                 <th>Level</th>
                                 <th>Action</th>
                                 <th>Message</th>
+                                <th>Context</th>
+
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach ($logs as $log)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $log->created_at->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ $log->user->name ?? 'System' }}</td>
-                                                    <td>
-                                                        <span
-                                                            class="badge bg-{{ 
-                                                                                                                                                                                        match ($log->level) {
-                                    'critical' => 'danger',
-                                    'error' => 'danger',
-                                    'warning' => 'warning',
-                                    default => 'secondary'
-                                }
-                                                                                                                                                                                    }}">
-                                                            {{ strtoupper($log->level) }}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ $log->action ?? '-' }}</td>
-                                                    <td style="max-width:300px; white-space: normal;">
-                                                        {{ $log->message }}
-                                                    </td>
-                                                </tr>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                                    <td>{{ $log->user->name ?? 'System' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ match ($log->level) { 'critical' => 'danger', 'error' => 'danger', 'warning' => 'warning', default => 'secondary'}
+                                                                    }}">
+                                            {{ strtoupper($log->level) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $log->action ?? '-' }}</td>
+                                    <td style="max-width:300px; white-space: normal;">
+                                        {{ $log->message }}
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @if(is_array($log->context))
+                                                <ul class="mb-0 ps-3">
+                                                    @foreach($log->context as $key => $value)
+                                                        <li>
+                                                            <strong>{{ $key }}:</strong>
+                                                            {{ is_scalar($value) ? $value : json_encode($value) }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                {{ $log->context }}
+                                            @endif
+                                        </small>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

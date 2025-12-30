@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class TestimonialController extends BaseController
@@ -148,7 +148,7 @@ class TestimonialController extends BaseController
         try {
             // Cleanup associated image
             if (!empty($testimonial->image_url)) {
-                S3::delete($testimonial->image_url);
+                S3Uploader::deletePath($testimonial->image_url);
             }
 
             $testimonial->delete();

@@ -6,25 +6,33 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AmazonS3Controller;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DeveloperSettingController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MenuItemController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublishController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SocialLinkController;
 use App\Http\Controllers\SystemLogController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserController;
 
@@ -102,6 +110,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
 */
 Route::middleware(['auth', 'verified', 'can:access-admin'])->group(function () {
 
+    /*
+     |--------------------------------------------------------------------------
+     | LMS Content Management   move to right place
+     |--------------------------------------------------------------------------
+     */
+    // S3 Amazon 
+    Route::post('/s3-presigned-url', [AmazonS3Controller::class, 'generatePresignedUrl']);
+    Route::view('/upload-test', 'upload');
+
+    Route::get('/course/{course}/modules/create', [ModuleController::class, 'create'])->name('modules.create');
+    // 🔹 Task Routes (Nested under module)
+    Route::get('/module/{module}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/module/{module}/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    // 🔹 Lessons Files Tests (Nested under Tasks)
+    Route::get('/task/{task}/lessons/create', [LessonController::class, 'create'])->name('lessons.create');
+    Route::post('/task/{task}/lessons', [LessonController::class, 'store'])->name('lessons.store');
+    Route::get('/task/{task}/files/create', [FileController::class, 'create'])->name('files.create');
+    Route::post('/task/{task}/files', [FileController::class, 'store'])->name('files.store');
+    Route::get('/task/{task}/tests/create', [TestController::class, 'create'])->name('tests.create');
+    Route::post('/task/{task}/tests', [TestController::class, 'store'])->name('tests.store');
+    Route::delete('/question/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+
+    Route::resource("course", CourseController::class);
+    Route::resource("module", ModuleController::class);
+    Route::resource("task", TaskController::class);
+    Route::resource("lesson", LessonController::class);
+    Route::resource("file", FileController::class);
+    Route::resource("test", TestController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | End LMS Content Management
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('roles', RoleController::class)->except(['show']);
 
@@ -120,7 +163,6 @@ Route::middleware(['auth', 'verified', 'can:access-website-admin'])->group(funct
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('/settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
-
     // Content
     Route::resource('banners', BannerController::class);
     Route::resource('blogs', BlogController::class);

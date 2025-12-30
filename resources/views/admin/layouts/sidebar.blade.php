@@ -5,19 +5,19 @@
     <div class="navbar-brand-box">
         <a href="{{ url('index') }}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="40">
+                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="80">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="40">
+                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="80">
             </span>
         </a>
 
         <a href="{{ url('index') }}" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="40">
+                <img src="{{ asset('/assets/admin/images/logos/small.png') }}" alt="" height="80">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('/assets/admin/images/logo-light.png') }}" alt="" height="40">
+                <img src="{{ asset('/assets/admin/images/logo-light.png') }}" alt="" height="80">
             </span>
         </a>
     </div>
@@ -32,7 +32,36 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
+                @can('access-admin')
+                    <li>
+                        <a href="#" class="has-arrow waves-effect" onclick="return false;">
+                            <i class="uil-setting"></i>
+                            <span>Administration</span>
+                        </a>
 
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('users.index') }}"><i class="uil-chat-bubble-user"></i> Users</a></li>
+                            <li><a href="{{ route('roles.index') }}"><i class="uil-users-alt"></i> Roles</a></li>
+                            <li><a href="{{ route('audits.index') }}"><i class="uil-history"></i> Audit Trail</a></li>
+                            <li><a href="{{ url('system-logs') }}"><i class="uil uil-bug"></i> System Logs</a></li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('access-admin')
+                    <li>
+                        <a href="#" class="has-arrow waves-effect" onclick="return false;">
+                            <i class="uil-setting"></i>
+                            <span>LMS</span>
+                        </a>
+                        <ul class="metismenu list-unstyled" id="side-menu">
+                            <li>
+                                <a href="{{ route('course.index') }}">
+                                    <i class="fas fa-book-open"></i> Courses
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
 
                 @can('access-website-admin')
                     <li>
@@ -66,21 +95,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('access-admin')
-                    <li>
-                        <a href="#" class="has-arrow waves-effect" onclick="return false;">
-                            <i class="uil-setting"></i>
-                            <span>Administration</span>
-                        </a>
 
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('users.index') }}"><i class="uil-chat-bubble-user"></i> Users</a></li>
-                            <li><a href="{{ route('roles.index') }}"><i class="uil-users-alt"></i> Roles</a></li>
-                            <li><a href="{{ route('audits.index') }}"><i class="uil-history"></i> Audit Trail</a></li>
-                            <li><a href="{{ url('system-logs') }}"><i class="uil uil-bug"></i> System Logs</a></li>
-                        </ul>
-                    </li>
-                @endcan
                 @can('access-developer')
                     <li>
                         <a href="#" class="has-arrow waves-effect" onclick="return false;">

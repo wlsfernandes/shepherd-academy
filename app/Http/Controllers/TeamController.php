@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class TeamController extends BaseController
@@ -150,7 +150,7 @@ class TeamController extends BaseController
         try {
             // Cleanup image if exists
             if (!empty($team->image_url)) {
-                S3::delete($team->image_url);
+                S3Uploader::deletePath($team->image_url);
             }
 
             $team->delete();

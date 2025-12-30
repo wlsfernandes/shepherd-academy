@@ -7,7 +7,7 @@ use App\Services\SystemLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 
 class BannerController extends BaseController
 {
@@ -187,7 +187,7 @@ class BannerController extends BaseController
         try {
             // 🔥 Delete image from storage if exists
             if (!empty($banner->image_url)) {
-                S3::delete($banner->image_url);
+                S3Uploader::deletePath($banner->image_url);
             }
 
             $banner->delete();

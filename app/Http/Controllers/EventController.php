@@ -6,7 +6,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Throwable;
 
 class EventController extends BaseController
@@ -180,17 +180,17 @@ class EventController extends BaseController
     {
         try {
             if (!empty($event->image_url)) {
-                S3::delete($event->image_url);
+                S3Uploader::deletePath($event->image_url);
             }
 
             // 🔥 Delete English file if exists
             if (!empty($event->file_url_en)) {
-                S3::delete($event->file_url_en);
+                S3Uploader::deletePath($event->file_url_en);
             }
 
             // 🔥 Delete Spanish file if exists
             if (!empty($event->file_url_es)) {
-                S3::delete($event->file_url_es);
+                S3Uploader::deletePath($event->file_url_es);
             }
             $event->delete();
 

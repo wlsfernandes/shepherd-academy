@@ -30,7 +30,6 @@ class RoleSeeder extends Seeder
         // ✅ Users and their roles
         $usersWithRoles = [
             'wlsfernandes@gmail.com' => [$adminRole->id, $developerRole->id],
-            'drlizrios@gmail.com' => [$adminRole->id],
         ];
 
         foreach ($usersWithRoles as $email => $roleIds) {

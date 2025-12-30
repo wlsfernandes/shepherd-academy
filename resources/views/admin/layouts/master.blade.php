@@ -38,6 +38,7 @@
 
     <!-- JAVASCRIPT -->
     @include('admin.layouts.vendor-scripts')
+    @stack('script')
 </body>
 
 </html>

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\SystemLogger;
 use Throwable;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 
 
 class BlogController extends BaseController
@@ -177,17 +177,17 @@ class BlogController extends BaseController
         try {
             // 🔥 Delete image if exists
             if (!empty($blog->image_url)) {
-                S3::delete($blog->image_url);
+                S3Uploader::deletePath($blog->image_url);
             }
 
             // 🔥 Delete English file if exists
             if (!empty($blog->file_url_en)) {
-                S3::delete($blog->file_url_en);
+                S3Uploader::deletePath($blog->file_url_en);
             }
 
             // 🔥 Delete Spanish file if exists
             if (!empty($blog->file_url_es)) {
-                S3::delete($blog->file_url_es);
+                S3Uploader::deletePath($blog->file_url_es);
             }
 
             $blog->delete();

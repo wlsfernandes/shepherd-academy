@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title') @lang('translation.Dashboard') @endsection
+@section('title') Dashboard @endsection
 @section('content')
 
     <div class="row">

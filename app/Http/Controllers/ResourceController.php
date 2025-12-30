@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Resource;
 use Illuminate\Http\Request;
 use App\Services\SystemLogger;
-use App\Helpers\S3;
+use App\Helpers\S3Uploader;
 use Exception;
 
 class ResourceController extends BaseController
@@ -151,11 +151,11 @@ class ResourceController extends BaseController
         try {
             // Cleanup associated files if exist
             if (!empty($resource->file_url_en)) {
-                S3::delete($resource->file_url_en);
+                S3Uploader::deletePath($resource->file_url_en);
             }
 
             if (!empty($resource->file_url_es)) {
-                S3::delete($resource->file_url_es);
+                S3Uploader::deletePath($resource->file_url_es);
             }
 
             $resource->delete();

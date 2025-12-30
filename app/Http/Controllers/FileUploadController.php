@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\S3;
+
 use Aws\S3\S3Client;
+use App\Helpers\S3Uploader;
+use App\Helpers\S3FolderGenerator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -75,13 +77,14 @@ class FileUploadController extends BaseController
 
         // Delete old file if exists
         if (!empty($instance->$column)) {
-            S3::delete($instance->$column);
+            S3Uploader::deletePath($instance->$column);
         }
 
-        // Upload new file
-        $path = S3::uploadFile(
+        $directory = S3FolderGenerator::createFolder("{$model}/files/{$lang}");
+        // Upload Update new file
+        $path = S3Uploader::uploadFile(
             $request->file('file'),
-            "{$model}/files/{$lang}"
+            $directory
         );
 
         $instance->update([
