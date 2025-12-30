@@ -42,14 +42,14 @@
 
                             {{-- File EN --}}
                             <td class="text-center">
-                                <a href="{{ route('admin.files.edit', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'en']) }}"
+                                <a href="{{ route('admin.content.edit', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'en']) }}"
                                     title="Upload / Edit English file" class="me-2">
                                     <i
                                         class="uil-file font-size-22 {{ $resource->file_url_en ? 'text-primary' : 'text-muted' }}"></i>
                                 </a>
 
                                 @if($resource->file_url_en)
-                                    <a href="{{ route('admin.files.download', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'en']) }}"
+                                    <a href="{{ route('admin.content.download', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'en']) }}"
                                         title="Download English file">
                                         <i class="fas fa-eye font-size-6 text-primary"></i>
                                     </a>
@@ -60,14 +60,14 @@
 
                             {{-- File ES --}}
                             <td class="text-center">
-                                <a href="{{ route('admin.files.edit', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'es']) }}"
+                                <a href="{{ route('admin.content.edit', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'es']) }}"
                                     title="Upload / Edit Spanish file">
                                     <i
                                         class="uil-file font-size-22 {{ $resource->file_url_es ? 'text-primary' : 'text-muted' }}"></i>
                                 </a>
 
                                 @if($resource->file_url_es)
-                                    <a href="{{ route('admin.files.download', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'es']) }}"
+                                    <a href="{{ route('admin.content.download', ['model' => 'resources', 'id' => $resource->id, 'lang' => 'es']) }}"
                                         title="Download Spanish file">
                                         <i class="fas fa-eye font-size-6 text-primary"></i>
                                     </a>

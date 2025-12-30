@@ -37,7 +37,7 @@
                         <strong>File #{{ $loop->iteration }}: </strong> {{ Str::limit($file->title, 40) }}
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="{{ url('/file/' . $file->id) }}" class="text-primary" title="View"><i
+                        <a href="{{ url('/file/display/' . $file->id) }}" class="text-primary" title="View" target="_blank"><i
                                 class="fas fa-eye"></i></a>
                         <a href="{{ url('/file/' . $file->id . '/edit') }}" class="text-warning" title="Edit"><i
                                 class="fas fa-edit"></i></a>

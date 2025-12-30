@@ -10,11 +10,11 @@ use App\Http\Controllers\AmazonS3Controller;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContentFileController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DeveloperSettingController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FileController;
-use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MenuItemController;
@@ -90,9 +90,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Files
-    Route::get('/files/{model}/{id}/{lang}', [FileUploadController::class, 'edit'])->name('admin.files.edit');
-    Route::post('/files/{model}/{id}/{lang}', [FileUploadController::class, 'update'])->name('admin.files.update');
-    Route::get('/files/{model}/{id}/{lang}/download', [FileUploadController::class, 'download'])->name('admin.files.download');
+    Route::get('/content/{model}/{id}/{lang}', [ContentFileController::class, 'edit'])->name('admin.content.edit');
+    Route::post('/content/{model}/{id}/{lang}', [ContentFileController::class, 'update'])->name('admin.content.update');
+    Route::get('/content/{model}/{id}/{lang}/download', [ContentFileController::class, 'download'])->name('admin.content.download');
 
     // Images
     Route::get('/images/{model}/{id}', [ImageUploadController::class, 'edit'])->name('admin.images.edit');
@@ -131,6 +131,7 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])->group(function () {
     Route::get('/task/{task}/tests/create', [TestController::class, 'create'])->name('tests.create');
     Route::post('/task/{task}/tests', [TestController::class, 'store'])->name('tests.store');
     Route::delete('/question/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+    Route::get('/file/display/{file}', [FileController::class, 'displayFile'])->name('file.displayFile');
 
     Route::resource("course", CourseController::class);
     Route::resource("module", ModuleController::class);

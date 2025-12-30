@@ -11,12 +11,25 @@
                 <x-alert />
 
                 <div class="card-body">
+
+                    @if (!empty($file?->url))
+
+                        <div class="mb-4">
+                            <h5 class="mb-2">Uploaded File</h5>
+
+                            <a href="{{ route('file.displayFile', $file->id) }}" target="_blank"
+                                class="btn btn-outline-primary">
+                                <i class="fas fa-file-alt me-1"></i>
+                                View File
+                            </a>
+                        </div>
+                    @endif
                     <!-- first create a PreSigned Javascript to Amazon S3 URL to upload diret to amazon After this the JScript its going to call Laravel Controller -->
                     <form id="upload-form" action="{{ route('files.store', $task->id) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
 
-                        <input type="hidden" id="upload_folder" value="{{ $folder }}">
+                        <input type="hidden" id="upload_folder" value="{{ $folder  }}">
                         <input type="hidden" name="task_id" value="{{ $task->id }}">
                         <input type="hidden" name="filename">
                         <input type="hidden" name="type">

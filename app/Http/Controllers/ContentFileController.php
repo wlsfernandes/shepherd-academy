@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class FileUploadController extends BaseController
+class ContentFileController extends BaseController
 {
     /**
      * Allowed models for file uploads
@@ -58,7 +58,7 @@ class FileUploadController extends BaseController
         $instance = $this->resolveModel($model, $id);
         $column = $this->resolveColumn($lang);
 
-        return view('admin.files.edit', [
+        return view('admin.content.edit', [
             'modelKey' => $model,
             'model' => $instance,
             'lang' => $lang,

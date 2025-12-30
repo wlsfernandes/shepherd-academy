@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\RedirectResponse;
 use Exception;
 
 class LessonController extends Controller
 {
 
-    public function show(string $id): View
+    public function show(string $id): View|RedirectResponse
     {
         try {
             $lesson = Lesson::findOrFail($id);

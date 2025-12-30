@@ -50,13 +50,14 @@
                 @can('access-admin')
                     <li>
                         <a href="#" class="has-arrow waves-effect" onclick="return false;">
-                            <i class="uil-setting"></i>
+                            <i class="uil uil-graduation-cap"></i>
                             <span>LMS</span>
                         </a>
-                        <ul class="metismenu list-unstyled" id="side-menu">
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li class="menu-title">Content</li>
                             <li>
                                 <a href="{{ route('course.index') }}">
-                                    <i class="fas fa-book-open"></i> Courses
+                                    <i class="uil uil-award"></i> Courses
                                 </a>
                             </li>
                         </ul>
